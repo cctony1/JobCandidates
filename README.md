@@ -5,7 +5,8 @@ In this project, I take a look at job candidates and how well they fit certain k
 The fun bits I learned:
 -how to effectively utilize/combine PCA with clustering algorithms
 -some basic webscraping
--data augmentation techniques for NLP.
+-data augmentation techniques for NLP
+-optimizing computation speed with Numba.
 
 Goals: 
 1. Predict and rank how well each candidate fits the role based on their available information.
@@ -13,18 +14,16 @@ Goals:
 
 -----
 
-I first augmented this small dataset via webscraping and contextual word embedding insertion/deletion methods. 
+I first augmented this small dataset via webscraping and contextual word embedding insertion/substitution methods. 
 
-KMeans clustering worked best (better than agglomerative, spectral, and bayesian gaussian mixtures) to segregate data into ~4 clusters based on TFIDF-encoded text concatenated from augmented job titles, locations, and connnections.
+KMeans clustering worked best (vs. agglomerative, spectral, and bayesian gaussian mixtures) to segregate data into ~6 clusters based on any of 3 different encodings (Bag of Words, TFIDF, and spaCy average word vectors), which were crafted from text I concatenated from augmented job titles, locations, and connnections.
 
-Once the dataset was organized using this unsupervised approach, I implemented a keyword search algorithm based on nearest neighbors.
+I ended up choosing the spaCy word vector dataset in the final solution. Once the dataset was organized using the unsupervised approach mentioned above, I implemented a keyword search algorithm based on nearest neighbors (with metric = cosine similarity).
 
 1. First, the cluster is chosen based on keywords.
-2. Then, potential candidates in the cluster are determined by selecting the nearest neighbors to the keywords.
-3. Candidates are ranked using a normal probability distribution centered about the keywords, assuming a standard deviation equal to the mean of the nearest neighbor Euclidean distances (in TFIDF space) to the keywords.
-4. Iterative manual review chooses the best candidate from the top ranked candidates.
-5. New candidates and rankings are generated on each iteration in the manner above, except that the starred candidate becomes the center of the normal distribution.
-6. The search ends when the candidate chosen during manual review is already at the top of the rankings.
+2. Then, all candidates in the cluster are ranked by cosine similarity to the keywords, with the top ~10 candidates being presented to a manual reviewer.
+3. The manual review leads to 1 candidate being selected (as the best). Subsequently, all other candidates are re-ranked based on similarity to the chosen one.
+4. Iterative manual review continues until the most suitable candidate remains at the top of the list.
 
 
 
