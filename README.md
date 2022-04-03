@@ -3,9 +3,13 @@
 In this project, I take a look at job candidates and how well they fit certain keywords. 
 
 The fun bits I learned:
+
 -how to effectively utilize/combine PCA with clustering algorithms
+
 -some basic webscraping
+
 -data augmentation techniques for NLP
+
 -optimizing computation speed with Numba.
 
 Goals: 
